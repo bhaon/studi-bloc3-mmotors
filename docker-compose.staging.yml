@@ -1,0 +1,57 @@
+# /opt/mmotors/staging/docker-compose.yml
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: mmotors-staging-db
+    environment:
+      POSTGRES_DB:       mmotors_staging
+      POSTGRES_USER:     mmotors
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - postgres_staging:/var/lib/postgresql/data
+    networks:
+      - staging-internal
+
+  api:
+    image: ghcr.io/bhaon/mmotors-backend:main   # ← tag différent de prod
+    container_name: mmotors-staging-api
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://mmotors:${DB_PASSWORD}@db:5432/mmotors_staging
+      SECRET_KEY:   ${SECRET_KEY}
+      DEBUG:        "true"           # logs plus verbeux en staging
+    networks:
+      - staging-internal
+      - traefik-net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.staging-api.rule=Host(`api.staging.mmotors.fr`)"
+      - "traefik.http.routers.staging-api.entrypoints=websecure"
+      - "traefik.http.routers.staging-api.tls.certresolver=letsencrypt"
+      - "traefik.http.services.staging-api.loadbalancer.server.port=8000"
+
+  frontend:
+    image: ghcr.io/bhaon/mmotors-frontend:main  # ← tag différent de prod
+    container_name: mmotors-staging-frontend
+    environment:
+      NEXT_PUBLIC_API_URL: https://api.staging.mmotors.fr
+    networks:
+      - staging-internal
+      - traefik-net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.staging-frontend.rule=Host(`staging.mmotors.fr`)"
+      - "traefik.http.routers.staging-frontend.entrypoints=websecure"
+      - "traefik.http.routers.staging-frontend.tls.certresolver=letsencrypt"
+      - "traefik.http.services.staging-frontend.loadbalancer.server.port=3000"
+
+volumes:
+  postgres_staging:
+    name: mmotors_postgres_staging
+
+networks:
+  staging-internal:
+    name: mmotors-staging-internal
+  traefik-net:
+    external: true

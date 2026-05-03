@@ -1,0 +1,56 @@
+# /opt/mmotors/production/docker-compose.yml
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: mmotors-prod-db
+    environment:
+      POSTGRES_DB:       mmotors_prod
+      POSTGRES_USER:     mmotors
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - postgres_prod:/var/lib/postgresql/data
+    networks:
+      - prod-internal
+
+  api:
+    image: ghcr.io/bhaon/mmotors-backend:latest
+    container_name: mmotors-prod-api
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://mmotors:${DB_PASSWORD}@db:5432/mmotors_prod
+      SECRET_KEY:   ${SECRET_KEY}
+    networks:
+      - prod-internal
+      - traefik-net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.prod-api.rule=Host(`api.mmotors.fr`)"
+      - "traefik.http.routers.prod-api.entrypoints=websecure"
+      - "traefik.http.routers.prod-api.tls.certresolver=letsencrypt"
+      - "traefik.http.services.prod-api.loadbalancer.server.port=8000"
+
+  frontend:
+    image: ghcr.io/bhaon/mmotors-frontend:latest
+    container_name: mmotors-prod-frontend
+    environment:
+      NEXT_PUBLIC_API_URL: https://api.mmotors.fr
+    networks:
+      - prod-internal
+      - traefik-net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.prod-frontend.rule=Host(`mmotors.fr`)"
+      - "traefik.http.routers.prod-frontend.entrypoints=websecure"
+      - "traefik.http.routers.prod-frontend.tls.certresolver=letsencrypt"
+      - "traefik.http.services.prod-frontend.loadbalancer.server.port=3000"
+
+volumes:
+  postgres_prod:
+    name: mmotors_postgres_prod
+
+networks:
+  prod-internal:
+    name: mmotors-prod-internal
+  traefik-net:
+    external: true    # réseau partagé avec Traefik
