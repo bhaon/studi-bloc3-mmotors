@@ -12,8 +12,10 @@ os.environ.setdefault("SECRET_KEY", "test-secret-key-for-pytest-minimum-32bytes!
 os.environ.setdefault("ENV", "test")
 os.environ.setdefault("DATABASE_URL", "sqlite:///./pytest_unit.db")
 
+from app.core.security import create_access_token, hash_password  # noqa: E402
 from app.db.session import Base, SessionLocal, engine  # noqa: E402
 from app.main import application  # noqa: E402
+from app.models.user import RoleEnum, User  # noqa: E402
 from app.models.vehicle import MoteurEnum, Vehicle  # noqa: E402
 
 
@@ -40,6 +42,41 @@ def db() -> Session:
         yield session
     finally:
         session.close()
+
+
+def unique_email() -> str:
+    """Génère un email unique pour éviter les collisions entre tests."""
+    return f"user_{uuid.uuid4().hex[:16]}@example.com"
+
+
+def create_user(
+    db: Session,
+    *,
+    role: RoleEnum = RoleEnum.client,
+    email: str | None = None,
+    password: str = "SecretMotDePasse1!",
+    is_active: bool = True,
+) -> User:
+    """Crée un utilisateur persisté et renvoie l'entité."""
+    u = User(
+        email=email or unique_email(),
+        hashed_password=hash_password(password),
+        first_name="Test",
+        last_name="User",
+        role=role,
+        email_verified=True,
+        is_active=is_active,
+    )
+    db.add(u)
+    db.commit()
+    db.refresh(u)
+    return u
+
+
+def auth_header(user: User) -> dict[str, str]:
+    """En-tête Authorization Bearer pour l'utilisateur donné."""
+    token = create_access_token(subject=str(user.id), role=user.role.value)
+    return {"Authorization": f"Bearer {token}"}
 
 
 def create_vehicle(db: Session, **kwargs: object) -> Vehicle:
