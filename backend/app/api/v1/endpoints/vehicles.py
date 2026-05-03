@@ -9,6 +9,9 @@ from app.schemas.vehicle import VehicleCreate, VehicleListOut, VehicleOut, Vehic
 
 router = APIRouter(prefix="/vehicules", tags=["Véhicules"])
 
+# Corps JSON ``detail`` pour les 404 catalogue / back-office (aligné avec la doc OpenAPI).
+VEHICULE_INTROUVABLE_DETAIL = "Véhicule introuvable"
+
 _R403_BO = openapi_http_error(
     status.HTTP_403_FORBIDDEN,
     "Rôle gestionnaire, superviseur ou admin requis",
@@ -18,7 +21,7 @@ _R403_BO = openapi_http_error(
 _R404_VEHICULE = openapi_http_error(
     status.HTTP_404_NOT_FOUND,
     "Véhicule inexistant ou archivé",
-    "Véhicule introuvable",
+    VEHICULE_INTROUVABLE_DETAIL,
 )
 
 
@@ -97,7 +100,7 @@ def get_vehicle(vehicle_id: int, db: DbSession):
     if not v:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Véhicule introuvable",
+            detail=VEHICULE_INTROUVABLE_DETAIL,
         )
     return VehicleOut.from_orm_vehicle(v)
 
@@ -145,7 +148,7 @@ def update_vehicle(
     if not v:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Véhicule introuvable",
+            detail=VEHICULE_INTROUVABLE_DETAIL,
         )
     for field, value in payload.model_dump(exclude_unset=True).items():
         setattr(v, field, value)
@@ -172,7 +175,7 @@ def toggle_lld(
     if not v:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Véhicule introuvable",
+            detail=VEHICULE_INTROUVABLE_DETAIL,
         )
     v.lld = not v.lld
     if not v.lld:
@@ -202,7 +205,7 @@ def archive_vehicle(
     if not v:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Véhicule introuvable",
+            detail=VEHICULE_INTROUVABLE_DETAIL,
         )
     v.archived = True
     v.archived_at = datetime.now(timezone.utc)

@@ -5,6 +5,9 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.db.session import Base
 import enum
 
+# Référence SQLAlchemy vers la clé primaire de ``users`` (évite de dupliquer le littéral).
+USERS_ID_FK = "users.id"
+
 
 class DossierTypeEnum(str, enum.Enum):
     achat = "achat"
@@ -31,9 +34,9 @@ class Dossier(Base):
     )
 
     # Relations
-    client_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
+    client_id: Mapped[int] = mapped_column(ForeignKey(USERS_ID_FK), nullable=False, index=True)
     vehicle_id: Mapped[int] = mapped_column(ForeignKey("vehicles.id"), nullable=False, index=True)
-    gestionnaire_id: Mapped[Optional[int]] = mapped_column(ForeignKey("users.id"), nullable=True)
+    gestionnaire_id: Mapped[Optional[int]] = mapped_column(ForeignKey(USERS_ID_FK), nullable=True)
 
     # Instruction
     motif_rejet: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
@@ -85,7 +88,7 @@ class DossierHistorique(Base):
     ancien_status: Mapped[Optional[str]] = mapped_column(String(30), nullable=True)
     nouveau_status: Mapped[str] = mapped_column(String(30), nullable=False)
     commentaire: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
-    operateur_id: Mapped[Optional[int]] = mapped_column(ForeignKey("users.id"), nullable=True)
+    operateur_id: Mapped[Optional[int]] = mapped_column(ForeignKey(USERS_ID_FK), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
     dossier: Mapped["Dossier"] = relationship("Dossier", back_populates="historique")

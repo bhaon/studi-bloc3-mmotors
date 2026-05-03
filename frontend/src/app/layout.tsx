@@ -15,10 +15,10 @@ export const metadata: Metadata = {
 // Il enveloppe l'ensemble du contenu de l'application dans la structure HTML de base
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   // Les enfants passés à la mise en page, typiquement le contenu de chaque page
   children: React.ReactNode;
-}) {
+}>) {
   return (
     // Déclaration de la langue principale du document (français)
     <html lang="fr">

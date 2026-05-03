@@ -40,7 +40,7 @@ class VehicleOut(BaseModel):
     moteur: MoteurEnum
     prix: float
     lld: bool
-    mensualite: Optional[float]
+    mensualite: Optional[float] = None
     img: str
     specs: VehicleSpecsOut
     options: List[VehicleOptionOut]

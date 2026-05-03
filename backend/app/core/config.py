@@ -9,35 +9,56 @@ from pydantic import BeforeValidator, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
+def _default_allowed_origins() -> List[str]:
+    """Valeurs CORS par défaut (non sensibles) si la configuration est absente ou vide."""
+    return [
+        "https://localhost:8443",
+        "https://127.0.0.1:8443",
+    ]
+
+
+def _strip_nonempty_string_list(items: list[Any]) -> List[str]:
+    """Normalise une liste d'origines : chaînes non vides après strip."""
+    return [str(x).strip() for x in items if str(x).strip()]
+
+
+def _try_parse_origins_json_array(s: str) -> List[str] | None:
+    """
+    Si ``s`` est un tableau JSON valide, renvoie la liste d'origines nettoyées.
+    Renvoie ``None`` pour repasser par le parseur CSV (JSON invalide ou type inattendu).
+    """
+    if not s.startswith("["):
+        return None
+    try:
+        parsed = json.loads(s)
+    except json.JSONDecodeError:
+        return None
+    if not isinstance(parsed, list):
+        return None
+    return _strip_nonempty_string_list(parsed)
+
+
 def _parse_allowed_origins(v: Any) -> List[str]:
     """
     Construit la liste CORS depuis une liste Python, du JSON (tableau) ou une chaîne CSV.
     Valeurs par défaut non sensibles si la variable est absente ou vide.
     """
-    default: List[str] = [
-        "https://localhost:8443",
-        "https://127.0.0.1:8443",
-    ]
+    default = _default_allowed_origins()
     if v is None:
         return default
     if isinstance(v, list):
-        out = [str(x).strip() for x in v if str(x).strip()]
+        out = _strip_nonempty_string_list(v)
         return out or default
-    if isinstance(v, str):
-        s = v.strip()
-        if not s:
-            return default
-        if s.startswith("["):
-            try:
-                parsed = json.loads(s)
-                if isinstance(parsed, list):
-                    out = [str(x).strip() for x in parsed if str(x).strip()]
-                    return out or default
-            except json.JSONDecodeError:
-                pass
-        parts = [x.strip() for x in s.split(",") if x.strip()]
-        return parts or default
-    return default
+    if not isinstance(v, str):
+        return default
+    s = v.strip()
+    if not s:
+        return default
+    json_origins = _try_parse_origins_json_array(s)
+    if json_origins is not None:
+        return json_origins or default
+    parts = [x.strip() for x in s.split(",") if x.strip()]
+    return parts or default
 
 
 class Settings(BaseSettings):

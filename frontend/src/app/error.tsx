@@ -6,10 +6,10 @@
 export default function AppError({
   error,
   reset,
-}: {
+}: Readonly<{
   error: Error & { digest?: string };
   reset: () => void;
-}) {
+}>) {
   return (
     <main className="mx-auto flex min-h-[40vh] max-w-lg flex-col items-center justify-center gap-4 px-4 text-center">
       <h1 className="text-xl font-semibold">Catalogue indisponible</h1>
