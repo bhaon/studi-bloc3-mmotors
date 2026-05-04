@@ -1,34 +1,26 @@
----
-# ============================================================
-# OVERLAY DEV — Kustomization
-# Déployé automatiquement à chaque push sur la branche develop
-# ============================================================
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 namespace: dev
 
-bases:
-  - ../../base
-
+# Tire uniquement deployment + service + postgresql
 resources:
+  - ../../base
   - ingress.yaml
   - configmap.yaml
 
-patchesStrategicMerge:
-  - patches/replicas.yaml
-  - patches/resources.yaml
-  - patches/storage.yaml
+patches:
+  - path: patches/replicas.yaml
+  - path: patches/resources.yaml
+  - path: patches/storage.yaml
 
 images:
-  - name: ghcr.io/bhaon/mmotors-frontend
-    newTag: dev-latest  # Remplacé dynamiquement par GitHub Actions
-  - name: ghcr.io/bhaon/mmotors-backend
+  - name: ghcr.io/YOUR_ORG/YOUR_APP-frontend
     newTag: dev-latest
-    
-commonLabels:
-  environment: dev
+  - name: ghcr.io/YOUR_ORG/YOUR_APP-backend
+    newTag: dev-latest
 
-commonAnnotations:
-  managed-by: kustomize
-  environment: dev
+labels:
+  - pairs:
+      environment: dev
+    includeSelectors: true
