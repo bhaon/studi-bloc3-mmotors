@@ -9,7 +9,10 @@ interface VehicleCardProps {
   onClick: (v: Vehicle) => void;
 }
 
-export default function VehicleCard({ vehicle: v, onClick }: VehicleCardProps) {
+export default function VehicleCard({
+  vehicle: v,
+  onClick,
+}: Readonly<VehicleCardProps>) {
   return (
     <div
       className="vehicle-card"
@@ -207,7 +210,7 @@ export default function VehicleCard({ vehicle: v, onClick }: VehicleCardProps) {
                 <strong style={{ color: "#185FA5", fontWeight: 600 }}>
                   {v.mensualite} €
                 </strong>
-                /mois
+                {"/mois"}
               </div>
             )}
           </div>
