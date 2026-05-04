@@ -315,5 +315,5 @@ jobs:
             -e DATABASE_URL="postgresql://intuser:intpass@localhost:5432/integrationdb" \
             -e ENVIRONMENT="test" \
             -e SECRET_KEY="integration-test-key" \
-            ghcr.io/${{ github.repository }}-mmotors-backend:${{ inputs.image_tag }} \
+            ghcr.io/${{ github.repository }}-backend:${{ inputs.image_tag }} \
             pytest tests/integration/ -v --tb=short

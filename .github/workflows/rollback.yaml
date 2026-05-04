@@ -125,11 +125,11 @@ jobs:
         run: |
           echo "🔄 Déploiement du tag ${{ inputs.target_tag }} sur ${{ inputs.environment }}..."
           kubectl set image deployment/frontend \
-            frontend=ghcr.io/${{ github.repository }}-mmotors-frontend:${{ inputs.target_tag }} \
+            frontend=ghcr.io/${{ github.repository }}-frontend:${{ inputs.target_tag }} \
             -n ${{ needs.validate.outputs.namespace }}
           kubectl set image deployment/backend \
-            db-migrate=ghcr.io/${{ github.repository }}-mmotors-backend:${{ inputs.target_tag }} \
-            backend=ghcr.io/${{ github.repository }}-mmotors-backend:${{ inputs.target_tag }} \
+            db-migrate=ghcr.io/${{ github.repository }}-backend:${{ inputs.target_tag }} \
+            backend=ghcr.io/${{ github.repository }}-backend:${{ inputs.target_tag }} \
             -n ${{ needs.validate.outputs.namespace }}
 
       - name: Attendre la fin du rollback — frontend
