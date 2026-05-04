@@ -3,7 +3,7 @@ interface ToastProps {
   visible: boolean;
 }
 
-export default function Toast({ message, visible }: ToastProps) {
+export default function Toast({ message, visible }: Readonly<ToastProps>) {
   return (
     <div
       style={{

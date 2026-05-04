@@ -1,5 +1,6 @@
 "use client";
 
+import type { KeyboardEvent } from "react";
 import Image from "next/image";
 import { Vehicle } from "@/types";
 
@@ -8,11 +9,24 @@ interface VehicleCardProps {
   onClick: (v: Vehicle) => void;
 }
 
-export default function VehicleCard({ vehicle: v, onClick }: VehicleCardProps) {
+export default function VehicleCard({
+  vehicle: v,
+  onClick,
+}: Readonly<VehicleCardProps>) {
   return (
     <div
       className="vehicle-card"
+      role="button"
+      tabIndex={0}
+      aria-label={`Ouvrir la fiche ${v.make} ${v.model}, ${v.year}`}
       onClick={() => onClick(v)}
+      onKeyDown={(e: KeyboardEvent<HTMLDivElement>) => {
+        if (e.target !== e.currentTarget) return;
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onClick(v);
+        }
+      }}
       style={{
         background: "var(--white)",
         borderRadius: "var(--radius)",
@@ -196,19 +210,15 @@ export default function VehicleCard({ vehicle: v, onClick }: VehicleCardProps) {
                 <strong style={{ color: "#185FA5", fontWeight: 600 }}>
                   {v.mensualite} €
                 </strong>
-                /mois
+                {"/mois"}
               </div>
             )}
           </div>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onClick(v);
-            }}
+          <span
             style={{
+              display: "inline-block",
               background: "var(--navy)",
               color: "var(--white)",
-              border: "none",
               padding: ".45rem .9rem",
               borderRadius: "6px",
               fontSize: ".78rem",
@@ -219,7 +229,7 @@ export default function VehicleCard({ vehicle: v, onClick }: VehicleCardProps) {
             }}
           >
             Voir la fiche
-          </button>
+          </span>
         </div>
       </div>
     </div>

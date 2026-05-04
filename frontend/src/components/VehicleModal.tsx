@@ -14,7 +14,7 @@ export default function VehicleModal({
   vehicle: v,
   onClose,
   onDossier,
-}: VehicleModalProps) {
+}: Readonly<VehicleModalProps>) {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -39,15 +39,11 @@ export default function VehicleModal({
   ] as const;
 
   return (
-    /* Backdrop */
+    /* Backdrop : fond = bouton natif plein écran, panneau au-dessus (z-index) */
     <div
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
       style={{
         position: "fixed",
         inset: 0,
-        background: "rgba(0,0,0,.55)",
         zIndex: 200,
         display: "flex",
         alignItems: "center",
@@ -55,9 +51,27 @@ export default function VehicleModal({
         padding: "1rem",
       }}
     >
+      <button
+        type="button"
+        aria-label="Fermer la modale"
+        onClick={onClose}
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          border: "none",
+          padding: 0,
+          margin: 0,
+          background: "rgba(0,0,0,.55)",
+          cursor: "pointer",
+        }}
+      />
       {/* Modal panel */}
       <div
         style={{
+          position: "relative",
+          zIndex: 1,
           background: "var(--white)",
           borderRadius: "16px",
           width: "100%",
@@ -95,6 +109,7 @@ export default function VehicleModal({
 
           {/* Close button */}
           <button
+            type="button"
             onClick={onClose}
             aria-label="Fermer"
             style={{
@@ -397,6 +412,7 @@ export default function VehicleModal({
           {/* CTA buttons */}
           <div style={{ display: "flex", gap: ".75rem" }}>
             <button
+              type="button"
               onClick={() => onDossier(v, v.lld ? "lld" : "achat")}
               style={{
                 flex: 1,
@@ -415,6 +431,7 @@ export default function VehicleModal({
             </button>
             {v.lld && (
               <button
+                type="button"
                 onClick={() => onDossier(v, "achat")}
                 style={{
                   flex: 1,
