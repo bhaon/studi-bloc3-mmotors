@@ -6,7 +6,7 @@ from sqlalchemy import text
 
 from app.core.config import settings
 from app.api.v1.router import api_router
-from app.db.session import engine, Base
+from app.db.session import engine
 
 # Import all models so Alembic / Base.metadata sees them
 import app.models.vehicle  # noqa
