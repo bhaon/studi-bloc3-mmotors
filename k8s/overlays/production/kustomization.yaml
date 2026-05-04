@@ -14,6 +14,7 @@ bases:
 resources:
   - namespace.yaml
   - resource-quota.yaml
+  - secrets.yaml
   - ingress.yaml
   - configmap.yaml
   - hpa.yaml

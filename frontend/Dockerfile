@@ -5,7 +5,6 @@
 #
 #  Build  : docker build -t mmotors-nextjs .
 #  Run    : docker run -p 3000:3000 mmotors-nextjs
-#  Compose: docker compose up -d
 # ──────────────────────────────────────────────────────────────
 
 # ── Stage 1 : dependencies ────────────────────────────────────

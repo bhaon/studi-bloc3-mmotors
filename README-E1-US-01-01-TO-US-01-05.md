@@ -20,7 +20,7 @@ VPS (1 machine)
 ├── /opt/mmotors/production/   → stack prod  (domaine : mmotors.fr)
 └── /opt/mmotors/staging/      → stack staging (domaine : staging.mmotors.fr)
 
-Les fichiers docker-compose peuvent sont dans la racine du repo.
+Déploiement via Kubernetes (manifests `k8s/`).
 
 ## Mise en place d'un Pipeline CI Manuel GitHub Actions
 - Mise en place d'une pipeline manuelle GitHub Actions pour valider :
