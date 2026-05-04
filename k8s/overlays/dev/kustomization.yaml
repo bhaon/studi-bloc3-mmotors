@@ -15,9 +15,9 @@ patches:
   - path: patches/storage.yaml
 
 images:
-  - name: ghcr.io/YOUR_ORG/YOUR_APP-frontend
+  - name: ghcr.io/bhaon/mmotors-frontend
     newTag: dev-latest
-  - name: ghcr.io/YOUR_ORG/YOUR_APP-backend
+  - name: ghcr.io/bhaon/mmotors-backend
     newTag: dev-latest
 
 labels:
