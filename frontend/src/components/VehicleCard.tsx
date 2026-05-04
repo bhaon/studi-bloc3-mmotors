@@ -1,6 +1,5 @@
 "use client";
 
-import type { KeyboardEvent } from "react";
 import Image from "next/image";
 import { Vehicle } from "@/types";
 
@@ -14,20 +13,18 @@ export default function VehicleCard({
   onClick,
 }: Readonly<VehicleCardProps>) {
   return (
-    <div
+    <button
+      type="button"
       className="vehicle-card"
-      role="button"
-      tabIndex={0}
       aria-label={`Ouvrir la fiche ${v.make} ${v.model}, ${v.year}`}
       onClick={() => onClick(v)}
-      onKeyDown={(e: KeyboardEvent<HTMLDivElement>) => {
-        if (e.target !== e.currentTarget) return;
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          onClick(v);
-        }
-      }}
       style={{
+        display: "block",
+        width: "100%",
+        textAlign: "left",
+        font: "inherit",
+        margin: 0,
+        padding: 0,
         background: "var(--white)",
         borderRadius: "var(--radius)",
         boxShadow: "var(--shadow)",
@@ -37,12 +34,12 @@ export default function VehicleCard({
         transition: "transform .2s, box-shadow .2s",
       }}
       onMouseEnter={(e) => {
-        const el = e.currentTarget as HTMLDivElement;
+        const el = e.currentTarget as HTMLButtonElement;
         el.style.transform = "translateY(-3px)";
         el.style.boxShadow = "0 8px 28px rgba(13,27,75,.14)";
       }}
       onMouseLeave={(e) => {
-        const el = e.currentTarget as HTMLDivElement;
+        const el = e.currentTarget as HTMLButtonElement;
         el.style.transform = "translateY(0)";
         el.style.boxShadow = "var(--shadow)";
       }}
@@ -232,6 +229,6 @@ export default function VehicleCard({
           </span>
         </div>
       </div>
-    </div>
+    </button>
   );
 }

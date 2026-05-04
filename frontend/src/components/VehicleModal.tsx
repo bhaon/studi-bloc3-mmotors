@@ -19,10 +19,10 @@ export default function VehicleModal({
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
-    window.addEventListener("keydown", onKey);
+    globalThis.addEventListener("keydown", onKey);
     document.body.classList.toggle("modal-open", !!v);
     return () => {
-      window.removeEventListener("keydown", onKey);
+      globalThis.removeEventListener("keydown", onKey);
       document.body.classList.remove("modal-open");
     };
   }, [v, onClose]);
