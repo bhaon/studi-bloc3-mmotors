@@ -65,8 +65,13 @@ jobs:
       - name: Setup kustomize
         uses: imranismail/setup-kustomize@v2
 
-      - name: Verify cluster connectivity
-        run: kubectl cluster-info --request-timeout=10s
+      - name: Verify cluster connectivity and RBAC
+        run: |
+          # Vérifie que l'API est joignable sans requérir de droits cluster-admin.
+          kubectl version --short --request-timeout=10s
+          # Vérifie explicitement les permissions nécessaires au déploiement.
+          kubectl auth can-i get deployments -n ${{ env.NAMESPACE }}
+          kubectl auth can-i patch deployments -n ${{ env.NAMESPACE }}
 
       - name: Update image tags in kustomization
         working-directory: k8s/overlays/dev
