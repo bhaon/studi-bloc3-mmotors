@@ -12,6 +12,12 @@ on:
       - develop
   workflow_dispatch:  # Déclenchement manuel possible
 
+# Permissions requises par le workflow réutilisable ci.yaml (job build : push GHCR + SARIF Trivy).
+permissions:
+  contents: read
+  packages: write
+  security-events: write
+
 env:
   NAMESPACE: dev
   IMAGE_TAG: dev-${{ github.sha }}

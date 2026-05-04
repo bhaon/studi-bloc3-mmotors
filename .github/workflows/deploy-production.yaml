@@ -17,6 +17,12 @@ on:
         required: true
         type: string
 
+# Permissions requises par le workflow réutilisable ci.yaml (job build : push GHCR + SARIF Trivy).
+permissions:
+  contents: read
+  packages: write
+  security-events: write
+
 env:
   NAMESPACE: production
 
