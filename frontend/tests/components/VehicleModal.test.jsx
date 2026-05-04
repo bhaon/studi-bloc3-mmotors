@@ -44,7 +44,7 @@ describe("VehicleModal", () => {
   it("ferme la modale au clic sur le fond", () => {
     const onClose = jest.fn();
     const vehicle = SAMPLE_VEHICLES[0];
-    const { container } = render(
+    render(
       <VehicleModal
         vehicle={vehicle}
         onClose={onClose}
@@ -52,8 +52,7 @@ describe("VehicleModal", () => {
       />,
     );
 
-    const backdrop = container.firstChild;
-    fireEvent.click(backdrop, { target: backdrop, currentTarget: backdrop });
+    fireEvent.click(screen.getByRole("button", { name: "Fermer la modale" }));
     expect(onClose).toHaveBeenCalled();
   });
 

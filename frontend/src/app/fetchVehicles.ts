@@ -26,7 +26,7 @@ export class VehiclesApiError extends Error {
  * @returns {string} URL absolue ou chemin relatif pour fetch.
  */
 function resolveVehiclesApiUrl(): string {
-  if (typeof globalThis.window !== "undefined") {
+  if (globalThis.window !== undefined) {
     const pub = process.env.NEXT_PUBLIC_API_URL?.trim();
     if (pub) return `${pub.replace(/\/$/, "")}/api/v1/vehicules`;
     return "/api/v1/vehicules";
