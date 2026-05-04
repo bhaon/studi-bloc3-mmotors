@@ -7,6 +7,7 @@ metadata:
 data:
   NODE_ENV: "production"
   ENVIRONMENT: "production"
+  API_INTERNAL_URL: "http://backend"
   API_URL: "https://netdevops.fr/api"
   ALLOWED_HOSTS: "netdevops.fr,www.netdevops.fr"
   LOG_LEVEL: "warning"

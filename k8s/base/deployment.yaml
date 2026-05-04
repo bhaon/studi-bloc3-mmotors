@@ -50,6 +50,12 @@ spec:
                 configMapKeyRef:
                   name: app-config
                   key: API_URL
+            # SSR Next.js : URL interne vers le Service backend (HTTP, port 80 du ClusterIP).
+            - name: API_INTERNAL_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: API_INTERNAL_URL
           resources:
             requests:
               cpu: "100m"
