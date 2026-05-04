@@ -1,0 +1,13 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: dev
+data:
+  NODE_ENV: "development"
+  ENVIRONMENT: "dev"
+  API_URL: "https://app-dev.netdevops.fr/api"
+  ALLOWED_HOSTS: "app-dev.netdevops.fr,localhost"
+  LOG_LEVEL: "debug"
+  DEBUG: "true"

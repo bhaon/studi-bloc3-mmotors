@@ -1,0 +1,39 @@
+---
+# ============================================================
+# OVERLAY PRODUCTION — Kustomization
+# Déployé uniquement sur tag Git vX.Y.Z avec approbation manuelle
+# ============================================================
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: production
+
+bases:
+  - ../../base
+
+resources:
+  - namespace.yaml
+  - resource-quota.yaml
+  - ingress.yaml
+  - configmap.yaml
+  - hpa.yaml
+  - pdb.yaml
+
+patchesStrategicMerge:
+  - patches/replicas.yaml
+  - patches/resources.yaml
+  - patches/storage.yaml
+  - patches/security.yaml
+
+images:
+  - name: ghcr.io/bhaon/mmotors-frontend
+    newTag: v0.0.0  # Remplacé par le tag Git réel via GitHub Actions
+  - name: ghcr.io/bhaon/mmotors-backend
+    newTag: v0.0.0
+
+commonLabels:
+  environment: production
+
+commonAnnotations:
+  managed-by: kustomize
+  environment: production

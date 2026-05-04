@@ -1,0 +1,26 @@
+---
+# ============================================================
+# POD DISRUPTION BUDGET — Garantit la disponibilité
+# en cas de maintenance du nœud (drain, upgrade K3S)
+# ============================================================
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: frontend-pdb
+  namespace: production
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app: frontend
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: backend-pdb
+  namespace: production
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app: backend
