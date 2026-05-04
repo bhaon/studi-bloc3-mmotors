@@ -116,10 +116,11 @@ spec:
         component: api
     spec:
       serviceAccountName: app-service-account
+      # Aligné sur l’image backend (utilisateur système fastapi uid/gid 1001 dans le Dockerfile).
       securityContext:
         runAsNonRoot: true
-        runAsUser: 1000
-        fsGroup: 1000
+        runAsUser: 1001
+        fsGroup: 1001
       initContainers:
         # Migrations via backend/manage.py (Alembic) — URL DB calculée depuis POSTGRES_*.
         - name: db-migrate
