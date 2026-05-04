@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import os
 import uuid
+from collections.abc import Generator
 
 import pytest
 from fastapi.testclient import TestClient
@@ -21,7 +22,7 @@ from app.models.vehicle import MoteurEnum, Vehicle  # noqa: E402
 
 
 @pytest.fixture(autouse=True)
-def reset_db() -> None:
+def reset_db() -> Generator[None, None, None]:
     """Réinitialise le schéma entre chaque test pour des données isolées."""
     Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
@@ -29,14 +30,14 @@ def reset_db() -> None:
 
 
 @pytest.fixture
-def client() -> TestClient:
+def client() -> Generator[TestClient, None, None]:
     """Client HTTP avec lifespan (création des tables si besoin)."""
     with TestClient(application) as c:
         yield c
 
 
 @pytest.fixture
-def db() -> Session:
+def db() -> Generator[Session, None, None]:
     """Session SQLAlchemy directe pour préparer des données."""
     session = SessionLocal()
     try:
