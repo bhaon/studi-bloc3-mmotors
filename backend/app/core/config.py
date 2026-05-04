@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 import json
+from urllib.parse import quote_plus
 from typing import Annotated, Any, List
 
-from pydantic import BeforeValidator, Field
+from pydantic import BeforeValidator, Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -75,10 +76,15 @@ class Settings(BaseSettings):
     APP_VERSION: str = "0.1.0"
     DEBUG: bool = False
 
-    DATABASE_URL: str = Field(
-        ...,
+    DATABASE_URL: str | None = Field(
+        default=None,
         description="URL SQLAlchemy synchrone (ex. postgresql://user:pass@host:5432/db).",
     )
+    POSTGRES_DB: str | None = Field(default=None, description="Nom de la base PostgreSQL.")
+    POSTGRES_USER: str | None = Field(default=None, description="Utilisateur PostgreSQL.")
+    POSTGRES_PASSWORD: str | None = Field(default=None, description="Mot de passe PostgreSQL.")
+    POSTGRES_HOST: str = Field(default="postgresql", description="Hôte PostgreSQL.")
+    POSTGRES_PORT: int = Field(default=5432, description="Port PostgreSQL.")
     SECRET_KEY: str = Field(
         ...,
         description="Secret pour signer les JWT — obligatoire (variable d'environnement uniquement).",
@@ -93,6 +99,28 @@ class Settings(BaseSettings):
             "https://127.0.0.1:8443",
         ],
     )
+
+    @model_validator(mode="after")
+    def _ensure_database_url(self) -> "Settings":
+        """
+        Garantit une DATABASE_URL valide.
+
+        Priorité:
+        1) DATABASE_URL explicite si fournie
+        2) Construction à partir de POSTGRES_* pour éviter les divergences de secrets
+        """
+        if self.DATABASE_URL:
+            return self
+        if self.POSTGRES_DB and self.POSTGRES_USER and self.POSTGRES_PASSWORD:
+            encoded_password = quote_plus(self.POSTGRES_PASSWORD)
+            self.DATABASE_URL = (
+                f"postgresql://{self.POSTGRES_USER}:{encoded_password}"
+                f"@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
+            )
+            return self
+        raise ValueError(
+            "Configuration DB invalide: fournir DATABASE_URL ou POSTGRES_DB/POSTGRES_USER/POSTGRES_PASSWORD."
+        )
 
 
 # Les champs requis sont fournis par l’environnement ; mypy ne le déduit pas.

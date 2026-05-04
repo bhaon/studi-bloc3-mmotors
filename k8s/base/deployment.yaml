@@ -121,16 +121,30 @@ spec:
         runAsUser: 1000
         fsGroup: 1000
       initContainers:
-        # Migrations via backend/manage.py (Alembic) — settings exige DATABASE_URL + SECRET_KEY.
+        # Migrations via backend/manage.py (Alembic) — URL DB calculée depuis POSTGRES_*.
         - name: db-migrate
           image: ghcr.io/bhaon/studi-bloc3-mmotors-backend:latest
           command: ["python", "manage.py", "migrate", "--noinput"]
           env:
-            - name: DATABASE_URL
+            - name: POSTGRES_DB
               valueFrom:
                 secretKeyRef:
                   name: db-credentials
-                  key: DATABASE_URL
+                  key: POSTGRES_DB
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRES_HOST
+              value: postgresql
+            - name: POSTGRES_PORT
+              value: "5432"
             - name: SECRET_KEY
               valueFrom:
                 secretKeyRef:
@@ -157,11 +171,25 @@ spec:
                 configMapKeyRef:
                   name: app-config
                   key: ENVIRONMENT
-            - name: DATABASE_URL
+            - name: POSTGRES_DB
               valueFrom:
                 secretKeyRef:
                   name: db-credentials
-                  key: DATABASE_URL
+                  key: POSTGRES_DB
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRES_HOST
+              value: postgresql
+            - name: POSTGRES_PORT
+              value: "5432"
             - name: SECRET_KEY
               valueFrom:
                 secretKeyRef:
