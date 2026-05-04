@@ -29,14 +29,15 @@ spec:
   policyTypes:
     - Ingress
     - Egress
+  # Tout le trafic Ingress arrive depuis le namespace du contrôleur (souvent kube-system).
+  # Ne pas dépendre d’un label de pod Traefik précis (varie selon Helm / version).
   ingress:
     - from:
         - namespaceSelector:
             matchLabels:
               kubernetes.io/metadata.name: kube-system
-          podSelector:
-            matchLabels:
-              app.kubernetes.io/name: traefik
+      ports:
+        - port: 3000
   egress:
     - to:
         - podSelector:
@@ -77,9 +78,8 @@ spec:
         - namespaceSelector:
             matchLabels:
               kubernetes.io/metadata.name: kube-system
-          podSelector:
-            matchLabels:
-              app.kubernetes.io/name: traefik
+      ports:
+        - port: 8000
   egress:
     - to:
         - podSelector:

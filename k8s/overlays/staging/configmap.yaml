@@ -1,1 +1,13 @@
-# Contenu déjà dans namespace.yaml (fusionné pour simplicité)
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: staging
+data:
+  NODE_ENV: "production"
+  ENVIRONMENT: "staging"
+  API_URL: "https://staging.netdevops.fr/api"
+  ALLOWED_HOSTS: "staging.netdevops.fr"
+  LOG_LEVEL: "info"
+  DEBUG: "false"

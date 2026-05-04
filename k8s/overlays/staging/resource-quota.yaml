@@ -1,2 +1,33 @@
-# Contenu déjà dans namespace.yaml (fusionné pour simplicité)
-# Ce fichier est un placeholder pour les overlays qui séparent les ressources
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: staging-quota
+  namespace: staging
+spec:
+  hard:
+    requests.cpu: "3"
+    requests.memory: 3Gi
+    limits.cpu: "6"
+    limits.memory: 6Gi
+    persistentvolumeclaims: "10"
+    pods: "30"
+    services: "15"
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: staging-limits
+  namespace: staging
+spec:
+  limits:
+    - type: Container
+      default:
+        cpu: "300m"
+        memory: "512Mi"
+      defaultRequest:
+        cpu: "100m"
+        memory: "128Mi"
+      max:
+        cpu: "2"
+        memory: "2Gi"
