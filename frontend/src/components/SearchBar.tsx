@@ -144,13 +144,9 @@ export default function SearchBar({
             id="search-km-max"
             style={selectStyle}
             value={kmMax ?? ""}
-<<<<<<< HEAD
             onChange={(e) =>
               onField("kmMax", optionalBase10IntFromString(e.target.value))
             }
-=======
-            onChange={(e) => onField("kmMax", optionalBase10IntFromString(e.target.value))}
->>>>>>> refs/remotes/origin/main
           >
             <option value="">Tous</option>
             <option value="30000">— 30 000 km</option>
