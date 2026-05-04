@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import type { KeyboardEvent as ReactKeyboardEvent } from "react";
 import Image from "next/image";
 import { Vehicle } from "@/types";
 
@@ -43,6 +44,13 @@ export default function VehicleModal({
     <div
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
+      }}
+      onKeyDown={(e: ReactKeyboardEvent<HTMLDivElement>) => {
+        if (e.target !== e.currentTarget) return;
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onClose();
+        }
       }}
       style={{
         position: "fixed",

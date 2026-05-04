@@ -34,6 +34,13 @@ const labelStyle: React.CSSProperties = {
   display: "block",
 };
 
+/** Chaîne de champ entier (trim) : vide → null, sinon entier base 10. */
+function optionalBase10IntFromString(value: string): number | null {
+  const v = value.trim();
+  if (v === "") return null;
+  return Number.parseInt(v, 10);
+}
+
 export default function SearchBar({
   marques,
   modeles,
@@ -44,7 +51,7 @@ export default function SearchBar({
   prixMax,
   onField,
   onSearch,
-}: SearchBarProps) {
+}: Readonly<SearchBarProps>) {
   return (
     <div
       style={{
@@ -71,8 +78,11 @@ export default function SearchBar({
       >
         {/* Marque */}
         <div>
-          <label style={labelStyle}>Marque</label>
+          <label htmlFor="search-marque" style={labelStyle}>
+            Marque
+          </label>
           <select
+            id="search-marque"
             style={selectStyle}
             value={marque}
             onChange={(e) => onField("marque", e.target.value)}
@@ -88,8 +98,11 @@ export default function SearchBar({
 
         {/* Modèle */}
         <div>
-          <label style={labelStyle}>Modèle</label>
+          <label htmlFor="search-modele" style={labelStyle}>
+            Modèle
+          </label>
           <select
+            id="search-modele"
             style={selectStyle}
             value={modele}
             onChange={(e) => onField("modele", e.target.value)}
@@ -105,8 +118,11 @@ export default function SearchBar({
 
         {/* Motorisation */}
         <div>
-          <label style={labelStyle}>Motorisation</label>
+          <label htmlFor="search-moteur" style={labelStyle}>
+            Motorisation
+          </label>
           <select
+            id="search-moteur"
             style={selectStyle}
             value={moteur}
             onChange={(e) => onField("moteur", e.target.value)}
@@ -121,13 +137,14 @@ export default function SearchBar({
 
         {/* Km max */}
         <div>
-          <label style={labelStyle}>Km max</label>
+          <label htmlFor="search-km-max" style={labelStyle}>
+            Km max
+          </label>
           <select
+            id="search-km-max"
             style={selectStyle}
             value={kmMax ?? ""}
-            onChange={(e) =>
-              onField("kmMax", e.target.value ? parseInt(e.target.value) : null)
-            }
+            onChange={(e) => onField("kmMax", optionalBase10IntFromString(e.target.value))}
           >
             <option value="">Tous</option>
             <option value="30000">— 30 000 km</option>
@@ -139,8 +156,11 @@ export default function SearchBar({
 
         {/* Budget max */}
         <div>
-          <label style={labelStyle}>Budget max (€)</label>
+          <label htmlFor="search-prix-max" style={labelStyle}>
+            Budget max (€)
+          </label>
           <input
+            id="search-prix-max"
             type="number"
             style={selectStyle}
             placeholder="Ex: 25000"
@@ -148,10 +168,7 @@ export default function SearchBar({
             step={1000}
             value={prixMax ?? ""}
             onChange={(e) =>
-              onField(
-                "prixMax",
-                e.target.value ? parseInt(e.target.value) : null,
-              )
+              onField("prixMax", optionalBase10IntFromString(e.target.value))
             }
           />
         </div>
