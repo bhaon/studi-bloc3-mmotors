@@ -67,34 +67,42 @@ export default function FiltersRow({
         {count} véhicule{count > 1 ? "s" : ""}
       </span>
 
-      <span
+      <button
+        type="button"
         onClick={onReset}
         style={{
           fontSize: ".8rem",
+          fontFamily: "inherit",
           color: "var(--cyan)",
           cursor: "pointer",
           textDecoration: "underline",
+          background: "none",
+          border: "none",
+          padding: 0,
         }}
       >
         Réinitialiser les filtres
-      </span>
+      </button>
     </div>
   );
 }
 
+interface ChipProps {
+  label: string;
+  active: boolean;
+  activeClass: "all" | "achat" | "lld";
+  dot?: "achat" | "lld";
+  onClick: () => void;
+}
+
+/** Pastille de filtre type de contrat (sélection exclusive). */
 function Chip({
   label,
   active,
   activeClass,
   dot,
   onClick,
-}: {
-  label: string;
-  active: boolean;
-  activeClass: "all" | "achat" | "lld";
-  dot?: "achat" | "lld";
-  onClick: () => void;
-}) {
+}: Readonly<ChipProps>) {
   const styles: Record<string, React.CSSProperties> = {
     base: {
       display: "inline-flex",
@@ -103,6 +111,7 @@ function Chip({
       padding: ".38rem .9rem",
       borderRadius: "20px",
       fontSize: ".8rem",
+      fontFamily: "inherit",
       fontWeight: 500,
       cursor: "pointer",
       userSelect: "none",
@@ -110,6 +119,9 @@ function Chip({
       background: "var(--white)",
       color: "var(--navy)",
       transition: "all .2s",
+      margin: 0,
+      WebkitAppearance: "none",
+      appearance: "none",
     },
     all: {
       background: "var(--navy)",
@@ -131,7 +143,9 @@ function Chip({
   const dotColors = { achat: "#639922", lld: "#185FA5" };
 
   return (
-    <div
+    <button
+      type="button"
+      aria-pressed={active}
       onClick={onClick}
       style={active ? { ...styles.base, ...styles[activeClass] } : styles.base}
     >
@@ -147,6 +161,6 @@ function Chip({
         />
       )}
       {label}
-    </div>
+    </button>
   );
 }
