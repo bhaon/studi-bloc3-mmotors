@@ -63,8 +63,8 @@ jobs:
         working-directory: k8s/overlays/staging
         run: |
           kustomize edit set image \
-            ghcr.io/${{ github.repository }}-frontend=ghcr.io/${{ github.repository }}-frontend:staging-${{ github.sha }} \
-            ghcr.io/${{ github.repository }}-backend=ghcr.io/${{ github.repository }}-backend:staging-${{ github.sha }}
+            ghcr.io/${{ github.repository }}-mmotors-frontend=ghcr.io/${{ github.repository }}-mmotors-frontend:staging-${{ github.sha }} \
+            ghcr.io/${{ github.repository }}-mmotors-backend=ghcr.io/${{ github.repository }}-mmotors-backend:staging-${{ github.sha }}
 
       - name: Apply manifests
         run: |

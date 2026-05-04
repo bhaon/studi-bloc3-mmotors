@@ -120,8 +120,8 @@ jobs:
         working-directory: k8s/overlays/production
         run: |
           kustomize edit set image \
-            ghcr.io/${{ github.repository }}-frontend=ghcr.io/${{ github.repository }}-frontend:${{ needs.validate.outputs.version }} \
-            ghcr.io/${{ github.repository }}-backend=ghcr.io/${{ github.repository }}-backend:${{ needs.validate.outputs.version }}
+            ghcr.io/${{ github.repository }}-mmotors-frontend=ghcr.io/${{ github.repository }}-mmotors-frontend:${{ needs.validate.outputs.version }} \
+            ghcr.io/${{ github.repository }}-mmotors-backend=ghcr.io/${{ github.repository }}-mmotors-backend:${{ needs.validate.outputs.version }}
 
       - name: Apply manifests (production)
         run: |
@@ -200,8 +200,8 @@ jobs:
             Date : ${{ github.run_created_at }}
 
             ### Images déployées
-            - Frontend : `ghcr.io/${{ github.repository }}-frontend:${{ needs.validate.outputs.version }}`
-            - Backend : `ghcr.io/${{ github.repository }}-backend:${{ needs.validate.outputs.version }}`
+            - Frontend : `ghcr.io/${{ github.repository }}-mmotors-frontend:${{ needs.validate.outputs.version }}`
+            - Backend : `ghcr.io/${{ github.repository }}-mmotors-backend:${{ needs.validate.outputs.version }}`
           generate_release_notes: true
 
       - name: Notify Slack — Production déployée

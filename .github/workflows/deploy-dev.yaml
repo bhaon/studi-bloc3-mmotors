@@ -75,8 +75,8 @@ jobs:
         working-directory: k8s/overlays/dev
         run: |
           kustomize edit set image \
-            ghcr.io/${{ github.repository }}-frontend=ghcr.io/${{ github.repository }}-frontend:dev-${{ github.sha }} \
-            ghcr.io/${{ github.repository }}-backend=ghcr.io/${{ github.repository }}-backend:dev-${{ github.sha }}
+            ghcr.io/${{ github.repository }}-mmotors-frontend=ghcr.io/${{ github.repository }}-mmotors-frontend:dev-${{ github.sha }} \
+            ghcr.io/${{ github.repository }}-mmotors-backend=ghcr.io/${{ github.repository }}-mmotors-backend:dev-${{ github.sha }}
 
       - name: Apply manifests (Kustomize)
         run: |

@@ -15,9 +15,9 @@ patches:
   - path: patches/storage.yaml
 
 images:
-  - name: ghcr.io/bhaon/mmotors-frontend
+  - name: ghcr.io/bhaon/studi-bloc3-mmotors-mmotors-frontend
     newTag: dev-latest
-  - name: ghcr.io/bhaon/mmotors-backend
+  - name: ghcr.io/bhaon/studi-bloc3-mmotors-mmotors-backend
     newTag: dev-latest
 
 labels:

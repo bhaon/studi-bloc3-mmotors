@@ -44,7 +44,7 @@ jobs:
       - name: Scan frontend — CVE complet
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ghcr.io/${{ github.repository }}-frontend:${{ steps.get-tag.outputs.tag }}
+          image-ref: ghcr.io/${{ github.repository }}-mmotors-frontend:${{ steps.get-tag.outputs.tag }}
           format: "sarif"
           output: "trivy-frontend-weekly.sarif"
           severity: "UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL"
@@ -53,7 +53,7 @@ jobs:
       - name: Scan backend — CVE complet
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ghcr.io/${{ github.repository }}-backend:${{ steps.get-tag.outputs.tag }}
+          image-ref: ghcr.io/${{ github.repository }}-mmotors-backend:${{ steps.get-tag.outputs.tag }}
           format: "sarif"
           output: "trivy-backend-weekly.sarif"
           severity: "UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL"
