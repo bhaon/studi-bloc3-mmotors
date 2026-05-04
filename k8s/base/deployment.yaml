@@ -121,21 +121,10 @@ spec:
         runAsUser: 1000
         fsGroup: 1000
       initContainers:
-        # Migrations SQLAlchemy (Alembic) — aligné sur backend/alembic ; settings exige DATABASE_URL + SECRET_KEY.
+        # Migrations via backend/manage.py (Alembic) — settings exige DATABASE_URL + SECRET_KEY.
         - name: db-migrate
           image: ghcr.io/bhaon/studi-bloc3-mmotors-backend:latest
-          command:
-            - /bin/sh
-            - -c
-            - |
-              i=0
-              while [ "$i" -lt 40 ]; do
-                i=$((i+1))
-                alembic upgrade head && exit 0
-                echo "db-migrate: tentative $i/40, attente PostgreSQL…"
-                sleep 2
-              done
-              exit 1
+          command: ["python", "manage.py", "migrate", "--noinput"]
           env:
             - name: DATABASE_URL
               valueFrom:
