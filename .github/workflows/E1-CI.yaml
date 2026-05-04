@@ -16,7 +16,7 @@ on:
         required: true
         default: "staging"
         type: choice
-        options: [staging, production]
+        options: [staging, production, E1-US_01-05-Issues]
       skip_tests:
         description: "Passer les tests (urgence uniquement)"
         required: false
