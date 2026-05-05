@@ -98,16 +98,10 @@ jobs:
         run: |
           echo "Attente stabilisation (15s)..."
           sleep 15
-          # Health check basique via kubectl port-forward
-          # --rm exige un conteneur attaché (--attach) depuis les kubectl récents, sinon erreur CLI.
-          kubectl run smoke-test-${{ github.run_id }} \
-            --image=curlimages/curl:latest \
-            --restart=Never \
-            --attach \
-            --rm \
-            -n ${{ env.NAMESPACE }} \
-            --command -- \
-            curl -f http://backend/api/healthz --max-time 10
+          # Appel depuis le déploiement frontend : les NetworkPolicy n’autorisent pas egress
+          # vers le backend depuis un pod éphémère « kubectl run », seulement depuis app=frontend.
+          kubectl exec -n ${{ env.NAMESPACE }} deployment/frontend -- \
+            node -e "const http=require('http');const r=http.get({hostname:'backend',port:80,path:'/api/healthz'},res=>{res.resume();process.exit(res.statusCode===200?0:1)});r.on('error',()=>process.exit(1));"
         continue-on-error: true
 
       - name: Rollback si déploiement échoué
