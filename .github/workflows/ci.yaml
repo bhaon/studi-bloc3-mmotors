@@ -5,6 +5,8 @@
 # via : uses: ./.github/workflows/ci.yaml
 # ============================================================
 name: CI — Build, Test & Scan
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true # pour éviter les erreurs de compatibilité avec Node.js 24
 
 on:
   workflow_call:

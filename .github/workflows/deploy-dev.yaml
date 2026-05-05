@@ -99,9 +99,11 @@ jobs:
           echo "Attente stabilisation (15s)..."
           sleep 15
           # Health check basique via kubectl port-forward
+          # --rm exige un conteneur attaché (--attach) depuis les kubectl récents, sinon erreur CLI.
           kubectl run smoke-test-${{ github.run_id }} \
             --image=curlimages/curl:latest \
             --restart=Never \
+            --attach \
             --rm \
             -n ${{ env.NAMESPACE }} \
             --command -- \
