@@ -187,7 +187,7 @@ jobs:
           file: ./frontend/Dockerfile
           push: true
           pull: true
-          no-cache: ${{ inputs.environment == 'production' }}
+          no-cache: true
           tags: |
             ghcr.io/${{ github.repository }}-frontend:${{ inputs.image_tag }}
             ghcr.io/${{ github.repository }}-frontend:${{ inputs.environment }}-latest
@@ -202,6 +202,13 @@ jobs:
             BUILD_ENV=${{ inputs.environment }}
             NEXT_PUBLIC_API_URL=${{ inputs.environment == 'production' && 'https://netdevops.fr/api' || format('https://{0}.netdevops.fr/api', inputs.environment) }}
           provenance: false
+
+      - name: Vérifier picomatch dans l'image frontend buildée
+        run: |
+          IMAGE_REF="ghcr.io/${{ github.repository }}-frontend@${{ steps.build-frontend.outputs.digest }}"
+          echo "Image scannée: $IMAGE_REF"
+          docker run --rm "$IMAGE_REF" \
+            node -e "try{console.log('picomatch='+require('picomatch/package.json').version)}catch(e){console.log('picomatch=absent')}"
 
       # ── Backend ───────────────────────────────────────────
       - name: Build & Push backend
