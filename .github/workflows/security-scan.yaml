@@ -18,6 +18,9 @@ jobs:
   scan-images:
     name: CVE Scan — Images Production
     runs-on: ubuntu-latest
+    env:
+      # Force Trivy CLI to load the ignore file regardless of action input mapping.
+      TRIVY_IGNOREFILE: .trivyignore
     permissions:
       security-events: write
       contents: read
