@@ -152,6 +152,15 @@ spec:
               value: postgresql
             - name: POSTGRES_PORT
               value: "5432"
+            - name: REDIS_HOST
+              value: redis
+            - name: REDIS_PORT
+              value: "6379"
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: redis-credentials
+                  key: REDIS_PASSWORD
             - name: SECRET_KEY
               valueFrom:
                 secretKeyRef:
@@ -197,6 +206,15 @@ spec:
               value: postgresql
             - name: POSTGRES_PORT
               value: "5432"
+            - name: REDIS_HOST
+              value: redis
+            - name: REDIS_PORT
+              value: "6379"
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: redis-credentials
+                  key: REDIS_PASSWORD
             - name: SECRET_KEY
               valueFrom:
                 secretKeyRef:

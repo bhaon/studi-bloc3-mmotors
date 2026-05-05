@@ -98,6 +98,12 @@ spec:
               app: postgresql
       ports:
         - port: 5432
+    - to:
+        - podSelector:
+            matchLabels:
+              app: redis
+      ports:
+        - port: 6379
     - to:  # DNS
         - namespaceSelector: {}
       ports:
@@ -138,6 +144,38 @@ spec:
               app: backend
       ports:
         - port: 5432
+  egress:
+    - to:
+        - namespaceSelector: {}
+      ports:
+        - port: 53
+          protocol: UDP
+        - port: 53
+          protocol: TCP
+---
+# ============================================================
+# NETWORK POLICY — Redis
+# Ingress : depuis backend uniquement
+# Egress : DNS uniquement
+# ============================================================
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: redis-policy
+spec:
+  podSelector:
+    matchLabels:
+      app: redis
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: backend
+      ports:
+        - port: 6379
   egress:
     - to:
         - namespaceSelector: {}
