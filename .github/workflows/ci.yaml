@@ -221,7 +221,17 @@ jobs:
           cache-to: type=gha,mode=max,scope=backend-${{ inputs.environment }}
           provenance: false
 
-      # ── Scan Trivy — Frontend ─────────────────────────────
+      # ── Scan Trivy — Frontend (logs lisibles) ─────────────
+      - name: Afficher CVE frontend (Trivy)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ghcr.io/${{ github.repository }}-frontend:${{ inputs.image_tag }}
+          format: "table"
+          severity: "CRITICAL,HIGH"
+          ignore-unfixed: true
+          exit-code: "0"
+
+      # ── Scan Trivy — Frontend (SARIF + blocage prod) ──────
       - name: Scan frontend (Trivy)
         id: trivy-frontend
         uses: aquasecurity/trivy-action@master
@@ -240,7 +250,17 @@ jobs:
           sarif_file: "trivy-frontend.sarif"
           category: "trivy-frontend"
 
-      # ── Scan Trivy — Backend ──────────────────────────────
+      # ── Scan Trivy — Backend (logs lisibles) ──────────────
+      - name: Afficher CVE backend (Trivy)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ghcr.io/${{ github.repository }}-backend:${{ inputs.image_tag }}
+          format: "table"
+          severity: "CRITICAL,HIGH"
+          ignore-unfixed: true
+          exit-code: "0"
+
+      # ── Scan Trivy — Backend (SARIF + blocage prod) ───────
       - name: Scan backend (Trivy)
         id: trivy-backend
         uses: aquasecurity/trivy-action@master
