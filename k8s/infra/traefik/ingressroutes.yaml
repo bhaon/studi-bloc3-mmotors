@@ -4,7 +4,7 @@
 # Alternative à l'Ingress standard — plus de contrôle
 # sur le chaînage des middlewares
 # ============================================================
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: app-production
@@ -45,7 +45,7 @@ spec:
 # ============================================================
 # INGRESSROUTE STAGING — Accès restreint par BasicAuth
 # ============================================================
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: app-staging
