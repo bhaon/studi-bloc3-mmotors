@@ -186,6 +186,8 @@ jobs:
           context: ./frontend
           file: ./frontend/Dockerfile
           push: true
+          pull: true
+          no-cache: ${{ inputs.environment == 'production' }}
           tags: |
             ghcr.io/${{ github.repository }}-frontend:${{ inputs.image_tag }}
             ghcr.io/${{ github.repository }}-frontend:${{ inputs.environment }}-latest
@@ -209,6 +211,8 @@ jobs:
           context: ./backend
           file: ./backend/Dockerfile
           push: true
+          pull: true
+          no-cache: ${{ inputs.environment == 'production' }}
           tags: |
             ghcr.io/${{ github.repository }}-backend:${{ inputs.image_tag }}
             ghcr.io/${{ github.repository }}-backend:${{ inputs.environment }}-latest
