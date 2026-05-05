@@ -12,8 +12,6 @@ resources:
   - ../../base
   - ingress.yaml
   - configmap.yaml
-  - hpa.yaml
-  - pdb.yaml
 
 patchesStrategicMerge:
   - patches/replicas.yaml

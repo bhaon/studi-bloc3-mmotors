@@ -9,3 +9,5 @@ resources:
   - network-policy.yaml
   - secrets.yaml
   - rbac.yaml
+  - hpa.yaml
+  - pdb.yaml
