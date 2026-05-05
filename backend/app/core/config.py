@@ -122,6 +122,14 @@ class Settings(BaseSettings):
             "Configuration DB invalide: fournir DATABASE_URL ou POSTGRES_DB/POSTGRES_USER/POSTGRES_PASSWORD."
         )
 
+    @property
+    def database_url(self) -> str:
+        """Retourne l’URL SQLAlchemy effective (toujours définie si ``Settings()`` a réussi sans ``ValueError``)."""
+        url = self.DATABASE_URL
+        if url is None:
+            raise RuntimeError("DATABASE_URL absente après validation — incohérence interne.")
+        return url
+
 
 # Les champs requis sont fournis par l’environnement ; mypy ne le déduit pas.
 settings = Settings()  # type: ignore[call-arg]

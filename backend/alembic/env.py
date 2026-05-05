@@ -22,7 +22,7 @@ if config.config_file_name is not None:
 logger = logging.getLogger("alembic.env")
 
 # Alembic utilise ConfigParser : les '%' d'une URL encodée (ex: %2B) doivent être échappés.
-config.set_main_option("sqlalchemy.url", settings.DATABASE_URL.replace("%", "%%"))
+config.set_main_option("sqlalchemy.url", settings.database_url.replace("%", "%%"))
 
 target_metadata = Base.metadata
 
