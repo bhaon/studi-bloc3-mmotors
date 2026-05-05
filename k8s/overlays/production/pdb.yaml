@@ -9,7 +9,7 @@ metadata:
   name: frontend-pdb
   namespace: production
 spec:
-  minAvailable: 2
+  minAvailable: 1
   selector:
     matchLabels:
       app: frontend
@@ -20,7 +20,7 @@ metadata:
   name: backend-pdb
   namespace: production
 spec:
-  minAvailable: 2
+  minAvailable: 1
   selector:
     matchLabels:
       app: backend

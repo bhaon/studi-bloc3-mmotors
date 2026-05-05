@@ -13,8 +13,8 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: frontend
-  minReplicas: 3
-  maxReplicas: 8
+  minReplicas: 1
+  maxReplicas: 1
   metrics:
     - type: Resource
       resource:
@@ -39,7 +39,7 @@ spec:
       stabilizationWindowSeconds: 0
       policies:
         - type: Pods
-          value: 2
+          value: 1
           periodSeconds: 60
 ---
 apiVersion: autoscaling/v2
@@ -52,8 +52,8 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: backend
-  minReplicas: 3
-  maxReplicas: 10
+  minReplicas: 1
+  maxReplicas: 1
   metrics:
     - type: Resource
       resource:
@@ -78,5 +78,5 @@ spec:
       stabilizationWindowSeconds: 0
       policies:
         - type: Pods
-          value: 2
+          value: 1
           periodSeconds: 30
