@@ -11,3 +11,4 @@ resources:
   - rbac.yaml
   - hpa.yaml
   - pdb.yaml
+  - rate-limit.yaml
