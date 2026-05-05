@@ -25,6 +25,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
 
       - name: Login to GHCR
         uses: docker/login-action@v3
@@ -38,6 +40,10 @@ jobs:
         run: |
           # Récupérer le dernier tag semver
           LATEST_TAG=$(git tag -l 'v*.*.*' | sort -V | tail -1)
+          if [ -z "$LATEST_TAG" ]; then
+            echo "❌ Aucun tag semver trouvé (format attendu: vX.Y.Z)"
+            exit 1
+          fi
           echo "tag=${LATEST_TAG}" >> $GITHUB_OUTPUT
           echo "Tag production actuel : ${LATEST_TAG}"
 
@@ -64,6 +70,12 @@ jobs:
         with:
           sarif_file: "trivy-frontend-weekly.sarif"
           category: "weekly-scan-frontend"
+
+      - name: Upload résultats backend
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: "trivy-backend-weekly.sarif"
+          category: "weekly-scan-backend"
 
       - name: Générer rapport résumé
         run: |

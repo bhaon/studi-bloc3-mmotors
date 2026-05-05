@@ -229,7 +229,7 @@ jobs:
       - name: Afficher CVE frontend (Trivy)
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ghcr.io/${{ github.repository }}-frontend:${{ inputs.image_tag }}
+          image-ref: ghcr.io/${{ github.repository }}-frontend@${{ steps.build-frontend.outputs.digest }}
           format: "table"
           severity: "CRITICAL,HIGH"
           ignore-unfixed: true
@@ -240,7 +240,7 @@ jobs:
         id: trivy-frontend
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ghcr.io/${{ github.repository }}-frontend:${{ inputs.image_tag }}
+          image-ref: ghcr.io/${{ github.repository }}-frontend@${{ steps.build-frontend.outputs.digest }}
           format: "sarif"
           output: "trivy-frontend.sarif"
           severity: "CRITICAL,HIGH"
@@ -258,7 +258,7 @@ jobs:
       - name: Afficher CVE backend (Trivy)
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ghcr.io/${{ github.repository }}-backend:${{ inputs.image_tag }}
+          image-ref: ghcr.io/${{ github.repository }}-backend@${{ steps.build-backend.outputs.digest }}
           format: "table"
           severity: "CRITICAL,HIGH"
           ignore-unfixed: true
@@ -269,7 +269,7 @@ jobs:
         id: trivy-backend
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ghcr.io/${{ github.repository }}-backend:${{ inputs.image_tag }}
+          image-ref: ghcr.io/${{ github.repository }}-backend@${{ steps.build-backend.outputs.digest }}
           format: "sarif"
           output: "trivy-backend.sarif"
           severity: "CRITICAL,HIGH"
@@ -288,7 +288,7 @@ jobs:
         uses: aquasecurity/trivy-action@master
         if: ${{ inputs.environment == 'production' }}
         with:
-          image-ref: ghcr.io/${{ github.repository }}-backend:${{ inputs.image_tag }}
+          image-ref: ghcr.io/${{ github.repository }}-backend@${{ steps.build-backend.outputs.digest }}
           format: "cyclonedx"
           output: "sbom-backend.json"
 
