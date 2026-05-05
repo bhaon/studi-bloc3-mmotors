@@ -21,6 +21,8 @@ permissions:
 env:
   NAMESPACE: dev
   IMAGE_TAG: dev-${{ github.sha }}
+  # Optionnel : variable dépôt `DEV_SMOKE_HEALTH_URL` si l’URL par défaut ne correspond pas à l’ingress.
+  DEV_SMOKE_HEALTH_URL: ${{ vars.DEV_SMOKE_HEALTH_URL }}
 
 jobs:
   # ----------------------------------------------------------
@@ -98,10 +100,12 @@ jobs:
         run: |
           echo "Attente stabilisation (15s)..."
           sleep 15
-          # Appel depuis le déploiement frontend : les NetworkPolicy n’autorisent pas egress
-          # vers le backend depuis un pod éphémère « kubectl run », seulement depuis app=frontend.
-          kubectl exec -n ${{ env.NAMESPACE }} deployment/frontend -- \
-            node -e "const http=require('http');const r=http.get({hostname:'backend',port:80,path:'/api/healthz'},res=>{res.resume();process.exit(res.statusCode===200?0:1)});r.on('error',()=>process.exit(1));"
+          # Health check via l’ingress public : pas de pods/exec ni port-forward, donc pas de droit
+          # supplémentaire sur le service account Kubernetes (curl s’exécute sur le runner GitHub).
+          DEFAULT_URL="https://app-dev.netdevops.fr/api/healthz"
+          URL="${DEV_SMOKE_HEALTH_URL:-$DEFAULT_URL}"
+          echo "GET $URL"
+          curl -fsS --retry 3 --retry-delay 3 --max-time 20 "$URL"
         continue-on-error: true
 
       - name: Rollback si déploiement échoué
