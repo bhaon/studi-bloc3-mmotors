@@ -105,7 +105,8 @@ jobs:
           DEFAULT_URL="https://app-dev.netdevops.fr/api/healthz"
           URL="${DEV_SMOKE_HEALTH_URL:-$DEFAULT_URL}"
           echo "GET $URL"
-          curl -fsS --retry 3 --retry-delay 3 --max-time 20 "$URL"
+          # En DEV, le certificat peut être auto-signé ; on tolère ce cas pour éviter un faux négatif.
+          curl -k -fsS --retry 3 --retry-delay 3 --max-time 20 "$URL"
         continue-on-error: true
 
       - name: Rollback si déploiement échoué
