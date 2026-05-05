@@ -13,15 +13,13 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 from sqlalchemy import text
 
-from app.db.session import SessionLocal, engine, Base
+from app.db.session import SessionLocal
 from app.models.vehicle import Vehicle, VehicleOption, MoteurEnum
 from app.models.user import User, RoleEnum
 from app.core.security import hash_password
 
 import app.models.vehicle  # noqa
 import app.models.user  # noqa
-
-Base.metadata.create_all(bind=engine)
 
 SCRIPTS_DIR = Path(__file__).resolve().parent
 VEHICLES_JSON_PATH = SCRIPTS_DIR / "vehicles.json"
@@ -90,6 +88,7 @@ USERS_DATA = [
 
 
 def seed():
+    """Insère le jeu de données si les tables existent déjà (migrations appliquées)."""
     db = SessionLocal()
     try:
         if not VEHICLES_JSON_PATH.is_file():

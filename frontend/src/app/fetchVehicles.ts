@@ -17,7 +17,7 @@ export class VehiclesApiError extends Error {
  * Résout l’URL de l’API catalogue (alignée sur les rewrites Next.js pour `/api/*`).
  *
  * - **Navigateur** : `NEXT_PUBLIC_API_URL` si défini, sinon chemin relatif `/api/v1/vehicules`.
- * - **SSR (Node)** : `API_INTERNAL_URL` en premier (Docker : `https://backend:8000`), puis
+ * - **SSR (Node)** : `API_INTERNAL_URL` en premier (K8s / Docker : `http://backend`), puis
  *   `NEXT_PUBLIC_API_URL` pour un `next dev` sur la machine hôte. Sinon défaut prod / local.
  *
  * En conteneur, `NEXT_PUBLIC_API_URL=http://localhost:8000` ne doit pas primer : pour le serveur
@@ -40,7 +40,7 @@ function resolveVehiclesApiUrl(): string {
 
   const serverBase =
     process.env.NODE_ENV === "production"
-      ? "https://backend:8000"
+      ? "http://backend"
       : "http://127.0.0.1:8000";
   return `${serverBase}/api/v1/vehicules`;
 }

@@ -128,6 +128,7 @@ jobs:
             frontend=ghcr.io/${{ github.repository }}-frontend:${{ inputs.target_tag }} \
             -n ${{ needs.validate.outputs.namespace }}
           kubectl set image deployment/backend \
+            db-migrate=ghcr.io/${{ github.repository }}-backend:${{ inputs.target_tag }} \
             backend=ghcr.io/${{ github.repository }}-backend:${{ inputs.target_tag }} \
             -n ${{ needs.validate.outputs.namespace }}
 

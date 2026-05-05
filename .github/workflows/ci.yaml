@@ -5,6 +5,8 @@
 # via : uses: ./.github/workflows/ci.yaml
 # ============================================================
 name: CI — Build, Test & Scan
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true # pour éviter les erreurs de compatibilité avec Node.js 24
 
 on:
   workflow_call:
@@ -196,7 +198,7 @@ jobs:
           cache-to: type=gha,mode=max,scope=frontend-${{ inputs.environment }}
           build-args: |
             BUILD_ENV=${{ inputs.environment }}
-            NEXT_PUBLIC_API_URL=${{ inputs.environment == 'production' && 'https://votre-domaine.com/api' || format('https://{0}.votre-domaine.com/api', inputs.environment) }}
+            NEXT_PUBLIC_API_URL=${{ inputs.environment == 'production' && 'https://netdevops.fr/api' || format('https://{0}.netdevops.fr/api', inputs.environment) }}
           provenance: false
 
       # ── Backend ───────────────────────────────────────────
@@ -232,7 +234,7 @@ jobs:
           exit-code: ${{ inputs.environment == 'production' && '1' || '0' }}
 
       - name: Upload Trivy frontend → GitHub Security
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         if: always()
         with:
           sarif_file: "trivy-frontend.sarif"
@@ -251,7 +253,7 @@ jobs:
           exit-code: ${{ inputs.environment == 'production' && '1' || '0' }}
 
       - name: Upload Trivy backend → GitHub Security
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         if: always()
         with:
           sarif_file: "trivy-backend.sarif"

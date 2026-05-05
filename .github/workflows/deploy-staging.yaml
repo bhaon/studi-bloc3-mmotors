@@ -59,6 +59,12 @@ jobs:
       - name: Setup kustomize
         uses: imranismail/setup-kustomize@v2
 
+      - name: Verify cluster connectivity and RBAC
+        run: |
+          # Vérifie explicitement les permissions nécessaires au déploiement.
+          kubectl auth can-i get deployments -n ${{ env.NAMESPACE }}
+          kubectl auth can-i patch deployments -n ${{ env.NAMESPACE }}
+
       - name: Update image tags
         working-directory: k8s/overlays/staging
         run: |
@@ -86,19 +92,20 @@ jobs:
         run: |
           echo "Attente stabilisation (30s)..."
           sleep 30
+          BASE_URL="https://staging.netdevops.fr"
 
           # Test via endpoint public HTTPS
           curl -f --retry 5 --retry-delay 10 \
-            https://staging.votre-domaine.com/api/healthz \
+            "$BASE_URL/api/healthz" \
             -H "User-Agent: GitHub-Actions-SmokeTest"
 
           # Test readiness backend
           curl -f --retry 3 --retry-delay 5 \
-            https://staging.votre-domaine.com/api/readyz
+            "$BASE_URL/api/readyz"
 
           # Test frontend répond
           curl -f --retry 3 --retry-delay 5 \
-            https://staging.votre-domaine.com/ \
+            "$BASE_URL/" \
             -o /dev/null -w "HTTP Status: %{http_code}\n"
 
           echo "✅ Tous les smoke tests passés"
@@ -133,7 +140,7 @@ jobs:
                 "fields": [
                   {"title": "Commit", "value": "${{ github.sha }}", "short": true},
                   {"title": "Auteur", "value": "${{ github.actor }}", "short": true},
-                  {"title": "URL Staging", "value": "https://staging.votre-domaine.com", "short": false},
+                  {"title": "URL Staging", "value": "https://staging.netdevops.fr", "short": false},
                   {"title": "Action requise", "value": "Valider puis créer un tag pour déployer en production", "short": false}
                 ]
               }]

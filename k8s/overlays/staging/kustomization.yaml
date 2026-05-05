@@ -14,6 +14,7 @@ bases:
 resources:
   - namespace.yaml
   - resource-quota.yaml
+  - secrets.yaml
   - ingress.yaml
   - configmap.yaml
 
@@ -23,9 +24,9 @@ patchesStrategicMerge:
   - patches/storage.yaml
 
 images:
-  - name: ghcr.io/bhaon/mmotors-frontend
+  - name: ghcr.io/bhaon/studi-bloc3-mmotors-frontend
     newTag: staging-latest
-  - name: ghcr.io/bhaon/mmotors-backend
+  - name: ghcr.io/bhaon/studi-bloc3-mmotors-backend
     newTag: staging-latest
 
 commonLabels:

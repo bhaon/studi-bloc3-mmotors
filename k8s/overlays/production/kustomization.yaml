@@ -14,6 +14,7 @@ bases:
 resources:
   - namespace.yaml
   - resource-quota.yaml
+  - secrets.yaml
   - ingress.yaml
   - configmap.yaml
   - hpa.yaml
@@ -26,9 +27,9 @@ patchesStrategicMerge:
   - patches/security.yaml
 
 images:
-  - name: ghcr.io/bhaon/mmotors-frontend
+  - name: ghcr.io/bhaon/studi-bloc3-mmotors-frontend
     newTag: v0.0.0  # Remplacé par le tag Git réel via GitHub Actions
-  - name: ghcr.io/bhaon/mmotors-backend
+  - name: ghcr.io/bhaon/studi-bloc3-mmotors-backend
     newTag: v0.0.0
 
 commonLabels:

@@ -21,6 +21,8 @@ permissions:
 env:
   NAMESPACE: dev
   IMAGE_TAG: dev-${{ github.sha }}
+  # Optionnel : variable dépôt `DEV_SMOKE_HEALTH_URL` si l’URL par défaut ne correspond pas à l’ingress.
+  DEV_SMOKE_HEALTH_URL: ${{ vars.DEV_SMOKE_HEALTH_URL }}
 
 jobs:
   # ----------------------------------------------------------
@@ -67,8 +69,6 @@ jobs:
 
       - name: Verify cluster connectivity and RBAC
         run: |
-          # Vérifie que l'API est joignable sans requérir de droits cluster-admin.
-          kubectl version --short --request-timeout=10s
           # Vérifie explicitement les permissions nécessaires au déploiement.
           kubectl auth can-i get deployments -n ${{ env.NAMESPACE }}
           kubectl auth can-i patch deployments -n ${{ env.NAMESPACE }}
@@ -100,14 +100,13 @@ jobs:
         run: |
           echo "Attente stabilisation (15s)..."
           sleep 15
-          # Health check basique via kubectl port-forward
-          kubectl run smoke-test-${{ github.run_id }} \
-            --image=curlimages/curl:latest \
-            --restart=Never \
-            --rm \
-            -n ${{ env.NAMESPACE }} \
-            --command -- \
-            curl -f http://backend/api/healthz --max-time 10
+          # Health check via l’ingress public : pas de pods/exec ni port-forward, donc pas de droit
+          # supplémentaire sur le service account Kubernetes (curl s’exécute sur le runner GitHub).
+          DEFAULT_URL="https://app-dev.netdevops.fr/api/healthz"
+          URL="${DEV_SMOKE_HEALTH_URL:-$DEFAULT_URL}"
+          echo "GET $URL"
+          # En DEV, le certificat peut être auto-signé ; on tolère ce cas pour éviter un faux négatif.
+          curl -k -fsS --retry 3 --retry-delay 3 --max-time 20 "$URL"
         continue-on-error: true
 
       - name: Rollback si déploiement échoué
