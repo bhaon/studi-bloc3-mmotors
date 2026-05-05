@@ -187,7 +187,7 @@ jobs:
           file: ./frontend/Dockerfile
           push: true
           pull: true
-          no-cache: ${{ inputs.environment == 'production' }}
+          no-cache: true
           tags: |
             ghcr.io/${{ github.repository }}-frontend:${{ inputs.image_tag }}
             ghcr.io/${{ github.repository }}-frontend:${{ inputs.environment }}-latest
@@ -202,6 +202,13 @@ jobs:
             BUILD_ENV=${{ inputs.environment }}
             NEXT_PUBLIC_API_URL=${{ inputs.environment == 'production' && 'https://netdevops.fr/api' || format('https://{0}.netdevops.fr/api', inputs.environment) }}
           provenance: false
+
+      - name: Vérifier picomatch dans l'image frontend buildée
+        run: |
+          IMAGE_REF="ghcr.io/${{ github.repository }}-frontend@${{ steps.build-frontend.outputs.digest }}"
+          echo "Image scannée: $IMAGE_REF"
+          docker run --rm "$IMAGE_REF" \
+            node -e "try{console.log('picomatch='+require('picomatch/package.json').version)}catch(e){console.log('picomatch=absent')}"
 
       # ── Backend ───────────────────────────────────────────
       - name: Build & Push backend
@@ -229,9 +236,10 @@ jobs:
       - name: Afficher CVE frontend (Trivy)
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ghcr.io/${{ github.repository }}-frontend:${{ inputs.image_tag }}
+          image-ref: ghcr.io/${{ github.repository }}-frontend@${{ steps.build-frontend.outputs.digest }}
           format: "table"
           severity: "CRITICAL,HIGH"
+          trivyignores: ".trivyignore"
           ignore-unfixed: true
           exit-code: "0"
 
@@ -240,10 +248,11 @@ jobs:
         id: trivy-frontend
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ghcr.io/${{ github.repository }}-frontend:${{ inputs.image_tag }}
+          image-ref: ghcr.io/${{ github.repository }}-frontend@${{ steps.build-frontend.outputs.digest }}
           format: "sarif"
           output: "trivy-frontend.sarif"
           severity: "CRITICAL,HIGH"
+          trivyignores: ".trivyignore"
           ignore-unfixed: true
           exit-code: ${{ inputs.environment == 'production' && '1' || '0' }}
 
@@ -258,9 +267,10 @@ jobs:
       - name: Afficher CVE backend (Trivy)
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ghcr.io/${{ github.repository }}-backend:${{ inputs.image_tag }}
+          image-ref: ghcr.io/${{ github.repository }}-backend@${{ steps.build-backend.outputs.digest }}
           format: "table"
           severity: "CRITICAL,HIGH"
+          trivyignores: ".trivyignore"
           ignore-unfixed: true
           exit-code: "0"
 
@@ -269,10 +279,11 @@ jobs:
         id: trivy-backend
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ghcr.io/${{ github.repository }}-backend:${{ inputs.image_tag }}
+          image-ref: ghcr.io/${{ github.repository }}-backend@${{ steps.build-backend.outputs.digest }}
           format: "sarif"
           output: "trivy-backend.sarif"
           severity: "CRITICAL,HIGH"
+          trivyignores: ".trivyignore"
           ignore-unfixed: true
           exit-code: ${{ inputs.environment == 'production' && '1' || '0' }}
 
@@ -288,8 +299,9 @@ jobs:
         uses: aquasecurity/trivy-action@master
         if: ${{ inputs.environment == 'production' }}
         with:
-          image-ref: ghcr.io/${{ github.repository }}-backend:${{ inputs.image_tag }}
+          image-ref: ghcr.io/${{ github.repository }}-backend@${{ steps.build-backend.outputs.digest }}
           format: "cyclonedx"
+          trivyignores: ".trivyignore"
           output: "sbom-backend.json"
 
       - name: Upload SBOM artifact
