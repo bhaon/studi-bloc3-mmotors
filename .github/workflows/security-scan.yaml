@@ -54,6 +54,7 @@ jobs:
           format: "sarif"
           output: "trivy-frontend-weekly.sarif"
           severity: "UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL"
+          trivyignores: ".trivyignore"
           ignore-unfixed: false
 
       - name: Scan backend — CVE complet
@@ -63,6 +64,7 @@ jobs:
           format: "sarif"
           output: "trivy-backend-weekly.sarif"
           severity: "UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL"
+          trivyignores: ".trivyignore"
           ignore-unfixed: false
 
       - name: Upload résultats

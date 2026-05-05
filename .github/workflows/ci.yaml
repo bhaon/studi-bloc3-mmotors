@@ -239,6 +239,7 @@ jobs:
           image-ref: ghcr.io/${{ github.repository }}-frontend@${{ steps.build-frontend.outputs.digest }}
           format: "table"
           severity: "CRITICAL,HIGH"
+          trivyignores: ".trivyignore"
           ignore-unfixed: true
           exit-code: "0"
 
@@ -251,6 +252,7 @@ jobs:
           format: "sarif"
           output: "trivy-frontend.sarif"
           severity: "CRITICAL,HIGH"
+          trivyignores: ".trivyignore"
           ignore-unfixed: true
           exit-code: ${{ inputs.environment == 'production' && '1' || '0' }}
 
@@ -268,6 +270,7 @@ jobs:
           image-ref: ghcr.io/${{ github.repository }}-backend@${{ steps.build-backend.outputs.digest }}
           format: "table"
           severity: "CRITICAL,HIGH"
+          trivyignores: ".trivyignore"
           ignore-unfixed: true
           exit-code: "0"
 
@@ -280,6 +283,7 @@ jobs:
           format: "sarif"
           output: "trivy-backend.sarif"
           severity: "CRITICAL,HIGH"
+          trivyignores: ".trivyignore"
           ignore-unfixed: true
           exit-code: ${{ inputs.environment == 'production' && '1' || '0' }}
 
@@ -297,6 +301,7 @@ jobs:
         with:
           image-ref: ghcr.io/${{ github.repository }}-backend@${{ steps.build-backend.outputs.digest }}
           format: "cyclonedx"
+          trivyignores: ".trivyignore"
           output: "sbom-backend.json"
 
       - name: Upload SBOM artifact
