@@ -52,6 +52,17 @@ spec:
           protocol: UDP
         - port: 53
           protocol: TCP
+    # Next.js `next/image` : le pod frontend récupère les URLs distantes (ex. images.unsplash.com)
+    # en HTTPS pour l’optimisation — sans cette règle, le catalogue affiche des visuels vides.
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+            except:
+              - 10.0.0.0/8
+              - 172.16.0.0/12
+              - 192.168.0.0/16
+      ports:
+        - port: 443
 ---
 # ============================================================
 # NETWORK POLICY — Backend API
