@@ -8,20 +8,15 @@ kind: Kustomization
 
 namespace: staging
 
-bases:
-  - ../../base
-
 resources:
-  - namespace.yaml
-  - resource-quota.yaml
-  - secrets.yaml
+  - ../../base
   - ingress.yaml
   - configmap.yaml
 
-patchesStrategicMerge:
-  - patches/replicas.yaml
-  - patches/resources.yaml
-  - patches/storage.yaml
+patches:
+  - path: patches/replicas.yaml
+  - path: patches/resources.yaml
+  - path: patches/storage.yaml
 
 images:
   - name: ghcr.io/bhaon/studi-bloc3-mmotors-frontend
@@ -29,9 +24,7 @@ images:
   - name: ghcr.io/bhaon/studi-bloc3-mmotors-backend
     newTag: staging-latest
 
-commonLabels:
-  environment: staging
-
-commonAnnotations:
-  managed-by: kustomize
-  environment: staging
+labels:
+  - pairs:
+      environment: staging
+    includeSelectors: true
