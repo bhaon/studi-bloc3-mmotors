@@ -8,13 +8,8 @@ kind: Kustomization
 
 namespace: production
 
-bases:
-  - ../../base
-
 resources:
-  - namespace.yaml
-  - resource-quota.yaml
-  - secrets.yaml
+  - ../../base
   - ingress.yaml
   - configmap.yaml
   - hpa.yaml
