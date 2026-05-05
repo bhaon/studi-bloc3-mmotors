@@ -35,6 +35,8 @@ spec:
       defaultRequest:
         cpu: "50m"
         memory: "64Mi"
+      # Max par conteneur : doit être >= aux limits définies dans overlays/production/patches/resources.yaml
+      # (backend: 2Gi, frontend: 1Gi). Sinon ReplicaSet FailedCreate avec quota/limit denial.
       max:
         cpu: "1"
-        memory: "1Gi"
+        memory: "2Gi"
