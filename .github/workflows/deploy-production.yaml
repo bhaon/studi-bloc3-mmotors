@@ -87,6 +87,10 @@ jobs:
     concurrency:
       group: deploy-production
       cancel-in-progress: false
+    # URL publique alignée avec l'Ingress prod (voir k8s/overlays/production/ingress.yaml).
+    # Override optionnel : variable dépôt PRODUCTION_SMOKE_BASE_URL (ex. https://www.netdevops.fr).
+    env:
+      PRODUCTION_PUBLIC_URL: ${{ vars.PRODUCTION_SMOKE_BASE_URL != '' && vars.PRODUCTION_SMOKE_BASE_URL || 'https://netdevops.fr' }}
 
     steps:
       - name: Checkout
@@ -147,10 +151,12 @@ jobs:
           echo "Attente stabilisation (30s)..."
           sleep 30
 
-          # Test health endpoints
+          # Smoke tests contre l'hôte défini dans PRODUCTION_PUBLIC_URL (Ingress TLS).
+          echo "Smoke tests sur: $PRODUCTION_PUBLIC_URL"
+
           for endpoint in "/api/healthz" "/api/readyz"; do
             STATUS=$(curl -o /dev/null -s -w "%{http_code}" \
-              https://votre-domaine.com$endpoint \
+              "${PRODUCTION_PUBLIC_URL}${endpoint}" \
               --max-time 15 \
               -H "User-Agent: GitHub-Actions-ProdSmokeTest")
             if [ "$STATUS" != "200" ]; then
@@ -162,7 +168,7 @@ jobs:
 
           # Test frontend
           STATUS=$(curl -o /dev/null -s -w "%{http_code}" \
-            https://votre-domaine.com/ --max-time 15)
+            "${PRODUCTION_PUBLIC_URL}/" --max-time 15)
           if [ "$STATUS" != "200" ]; then
             echo "❌ Frontend retourne HTTP $STATUS"
             exit 1
@@ -216,7 +222,7 @@ jobs:
                 "fields": [
                   {"title": "Version", "value": "${{ needs.validate.outputs.version }}", "short": true},
                   {"title": "Déployé par", "value": "${{ github.actor }}", "short": true},
-                  {"title": "URL", "value": "https://votre-domaine.com", "short": false},
+                  {"title": "URL", "value": "${{ env.PRODUCTION_PUBLIC_URL }}", "short": false},
                   {"title": "Release notes", "value": "${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ needs.validate.outputs.version }}", "short": false}
                 ]
               }]
@@ -254,6 +260,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: deploy
     if: success()
+    env:
+      PRODUCTION_PUBLIC_URL: ${{ vars.PRODUCTION_SMOKE_BASE_URL != '' && vars.PRODUCTION_SMOKE_BASE_URL || 'https://netdevops.fr' }}
 
     steps:
       - name: Wait 15 minutes
@@ -263,7 +271,7 @@ jobs:
         run: |
           for i in {1..5}; do
             STATUS=$(curl -o /dev/null -s -w "%{http_code}" \
-              https://votre-domaine.com/api/healthz --max-time 10)
+              "${PRODUCTION_PUBLIC_URL}/api/healthz" --max-time 10)
             echo "Check $i/5 → HTTP $STATUS"
             if [ "$STATUS" != "200" ]; then
               echo "❌ Health check $i échoué"
