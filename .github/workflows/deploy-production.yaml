@@ -158,6 +158,7 @@ jobs:
             STATUS=$(curl -o /dev/null -s -w "%{http_code}" \
               "${PRODUCTION_PUBLIC_URL}${endpoint}" \
               --max-time 15 \
+              -k \
               -H "User-Agent: GitHub-Actions-ProdSmokeTest")
             if [ "$STATUS" != "200" ]; then
               echo "❌ Endpoint $endpoint retourne HTTP $STATUS"
@@ -168,7 +169,7 @@ jobs:
 
           # Test frontend
           STATUS=$(curl -o /dev/null -s -w "%{http_code}" \
-            "${PRODUCTION_PUBLIC_URL}/" --max-time 15)
+            "${PRODUCTION_PUBLIC_URL}/" --max-time 15 -k)
           if [ "$STATUS" != "200" ]; then
             echo "❌ Frontend retourne HTTP $STATUS"
             exit 1
@@ -271,7 +272,7 @@ jobs:
         run: |
           for i in {1..5}; do
             STATUS=$(curl -o /dev/null -s -w "%{http_code}" \
-              "${PRODUCTION_PUBLIC_URL}/api/healthz" --max-time 10)
+              "${PRODUCTION_PUBLIC_URL}/api/healthz" --max-time 10 -k)
             echo "Check $i/5 → HTTP $STATUS"
             if [ "$STATUS" != "200" ]; then
               echo "❌ Health check $i échoué"
