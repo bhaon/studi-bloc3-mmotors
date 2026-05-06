@@ -19,7 +19,7 @@ on:
 
 # Permissions requises par le workflow réutilisable ci.yaml (job build : push GHCR + SARIF Trivy).
 permissions:
-  contents: read
+  contents: write
   packages: write
   security-events: write
 
@@ -204,12 +204,13 @@ jobs:
             ## Déploiement production — ${{ needs.validate.outputs.version }}
 
             Déployé par : @${{ github.actor }}
-            Date : ${{ github.run_created_at }}
+            Date : ${{ github.run_started_at }}
 
             ### Images déployées
             - Frontend : `ghcr.io/${{ github.repository }}-frontend:${{ needs.validate.outputs.version }}`
             - Backend : `ghcr.io/${{ github.repository }}-backend:${{ needs.validate.outputs.version }}`
           generate_release_notes: true
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Notify Slack — Production déployée
         if: success()
